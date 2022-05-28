@@ -1,0 +1,18 @@
+main : io.github.JoltMuz.DodgeBolt.main
+name: DodgeBolt
+version: 1.0
+author: JoltTheBolt
+
+commands:
+  dbmap:
+    description: add or remove maps
+    usage: /dbmap [set/clear/list]
+    aliases: [dodgebolt-map]
+  db:
+    description: /db teams or /db nextmatch
+    usage: /db [teams/nextmatch]
+    aliases: [dodgebolt]
+  dbend:
+    description: broadcast points.
+    usage: /dbend
+    aliases: [dodgebolt-end,dbpoints]
