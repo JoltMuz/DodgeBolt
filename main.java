@@ -14,6 +14,7 @@ public class main extends JavaPlugin
 		this.getCommand("dbmap").setExecutor(new dbmap());
 		this.getCommand("db").setExecutor(new db());
 		this.getCommand("dbend").setExecutor(new points());
+		this.getCommand("dbkmsg").setExecutor(new dbkmsg());
 		getServer().getPluginManager().registerEvents(new dbgame(), this);
 	}
 	@Override

@@ -1,27 +1,34 @@
 package io.github.JoltMuz.DodgeBolt;
 
+import java.util.HashMap;
+import java.util.Random;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.Location;
 import org.bukkit.entity.Arrow;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 
 public class dbgame implements Listener
 {
+	
+	public static HashMap<String,UUID> uuids = new HashMap<>();
 	@EventHandler
 	public void Freeze(PlayerMoveEvent e)
 	{
 		if (db.startingCooldown && (db.currentTeam1.contains(e.getPlayer()) || db.currentTeam2.contains(e.getPlayer())))
 		{
-			Bukkit.broadcastMessage("move debug");
-			if (e.getPlayer().getVelocity().getX() > 0 || e.getPlayer().getVelocity().getZ() > 0)
+			if (e.getPlayer().getVelocity().getX() > -1 || e.getPlayer().getVelocity().getZ() > -1)
 			{
-				
-				e.setCancelled(true);
+				Player player = e.getPlayer();
+    		    Location location = player.getLocation();
+    		    player.teleport(location);
 			}
 		}
 	}
@@ -64,22 +71,22 @@ public class dbgame implements Listener
 						if (db.currentTeam1.contains(damager) && db.currentTeam2remaining.contains(damagee))
 						{
 							db.currentTeam2remaining.remove(damagee);
-							Bukkit.broadcastMessage(main.prefix + damagee.getPlayerListName() + ChatColor.RED + " was eliminated by " + damager.getPlayerListName());
-							damagee.damage(20,damager);
+							Bukkit.broadcastMessage(main.prefix + db.team2color + damagee.getName() + ChatColor.DARK_GRAY + " " + dbkmsg.setMessages.get(new Random().nextInt(0,dbkmsg.setMessages.size())) + " " + db.team1color + damager.getName());
 							damagee.setPlayerListName(ChatColor.DARK_GRAY + damagee.getName());
+							damagee.teleport(damagee.getWorld().getSpawnLocation());
 							points.points.put(damager.getName(), points.points.get(damager.getName()) + 2);
-							damager.sendMessage(main.prefix + ChatColor.DARK_GREEN + "Your points: " + ChatColor.GREEN + points.points.get(damager.getName()));
+							damager.sendMessage(main.prefix + ChatColor.DARK_GREEN + "Your Total points: " + ChatColor.GREEN + points.points.get(damager.getName()));
 							damagee.getInventory().clear();
 							
 						}
 						if (db.currentTeam2.contains(damager) && db.currentTeam1remaining.contains(damagee))
 						{
 							db.currentTeam1remaining.remove(damagee);
-							Bukkit.broadcastMessage(main.prefix + damagee.getPlayerListName() + ChatColor.RED + " was eliminated by " + damager.getPlayerListName());
-							damagee.damage(30, damager);
+							Bukkit.broadcastMessage(main.prefix + db.team1color + damagee.getName() + ChatColor.DARK_GRAY + " " + dbkmsg.setMessages.get(new Random().nextInt(0,dbkmsg.setMessages.size())) + " " + db.team2color + damager.getName());
 							damagee.setPlayerListName(ChatColor.DARK_GRAY + damagee.getName());
+							damagee.teleport(damagee.getWorld().getSpawnLocation());
 							points.points.put(damager.getName(), points.points.get(damager.getName()) + 2);
-							damager.sendMessage(main.prefix + ChatColor.DARK_GREEN + "Your points: "+ ChatColor.GREEN + points.points.get(damager.getName()));
+							damager.sendMessage(main.prefix + ChatColor.DARK_GREEN + "Your Total points: "+ ChatColor.GREEN + points.points.get(damager.getName()));
 							damagee.getInventory().clear();
 						}
 						if (db.currentTeam1remaining.size() == 0 )
@@ -89,8 +96,8 @@ public class dbgame implements Listener
 							{
 								db.winners.add(p);
 								points.points.put(p.getName(), points.points.get(p.getName()) + 5);
-								p.sendMessage(main.prefix + ChatColor.DARK_GREEN + "Your points: "+ ChatColor.GREEN + points.points.get(p.getName()));
-								p.setHealth(0);
+								p.sendMessage(main.prefix + ChatColor.DARK_GREEN + "Your Total points: "+ ChatColor.GREEN + points.points.get(p.getName()));
+								p.teleport(p.getWorld().getSpawnLocation());
 								p.setCustomName(p.getName());
 								p.setPlayerListName(p.getName());
 								p.getInventory().clear();
@@ -104,15 +111,15 @@ public class dbgame implements Listener
 							
 							
 						}
-						if (db.currentTeam2remaining.size() == 0 )
+						else if (db.currentTeam2remaining.size() == 0 )
 						{
 							Bukkit.broadcastMessage(main.prefix + ChatColor.AQUA + "Winners: " + ChatColor.GREEN + db.currentTeam1Players);	
 							for (Player p : db.currentTeam1)
 							{
 								points.points.put(p.getName(), points.points.get(p.getName()) + 5);
-								p.sendMessage(main.prefix + ChatColor.DARK_GREEN + "Your points: " + ChatColor.GREEN + points.points.get(p.getName()));
+								p.sendMessage(main.prefix + ChatColor.DARK_GREEN + "Your Total points: " + ChatColor.GREEN + points.points.get(p.getName()));
 								db.winners.add(p);
-								p.setHealth(0);
+								p.teleport(p.getWorld().getSpawnLocation());
 								p.setCustomName(p.getName());
 								p.setPlayerListName(p.getName());
 								p.getInventory().clear();
@@ -128,5 +135,11 @@ public class dbgame implements Listener
 				}
 			}
 		}
+	}
+	@EventHandler
+	public void onQuit(PlayerQuitEvent e)
+	{
+		Player p = e.getPlayer();
+		uuids.put(p.getName(), p.getUniqueId());
 	}
 }
