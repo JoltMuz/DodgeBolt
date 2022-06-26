@@ -44,7 +44,7 @@ public class points implements CommandExecutor
 	        {
 	        	if (p.getPlayerListName().contains(ChatColor.DARK_GRAY.toString()))
 	        	{
-	        		p.setPlayerListName(p.getName());
+	        	//	p.setPlayerListName(p.getName());
 	        	}
 	        	db.teams.clear();
 	        	db.winners.clear();

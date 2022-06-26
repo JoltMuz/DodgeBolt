@@ -20,7 +20,12 @@ public class main extends JavaPlugin
 	@Override
 	public void onDisable()
 	{
-		
+		db.gameRunning = false;
+		db.currentTeam1.clear();
+		db.currentTeam2.clear();
+		db.currentTeam2Players = "";
+		db.currentTeam1Players = "";
+		db.currentTeam1remaining.clear();
 	}
 	
 	public static String prefix = ChatColor.BLUE + "DodgeBolt" + ChatColor.DARK_GRAY + " 》 ";
